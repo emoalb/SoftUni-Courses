@@ -1,0 +1,110 @@
+function showView(viewName) {
+    $('main > section').hide(); // Hide all views
+    $('#' + viewName).show(); // Show the selected view only
+}
+function showHomeView() {
+    showView('viewHome');
+}
+
+
+
+function displayAds(ads) {
+    let table = $('#ads > table')
+    table.find('tr').each((index, el) => {
+        if(index > 0) {
+            $(el).remove()
+        }
+    });
+    for (let i = 0 ;i < ads.length; i++) {
+        let tr = $(`<tr>`);
+        table.append(
+            $(tr).append($(`<td>${ads[i].title}</td>`))
+                .append($(`<td>${ads[i].publisher}</td>`))
+                .append($(`<td>${ads[i].description}</td>`))
+                .append($(`<td>${ads[i].price}</td>`))
+                .append($(`<td>${ads[i].date}</td>`))
+
+        );
+        if(ads[i]._acl.creator === sessionStorage.getItem('userId')) {
+            $(tr).append(
+                $(`<td>`).append(
+                    $(`<a href="#">[Edit]</a>`).on('click', function () {
+                        loadAdForEdit(ads[i])
+                    })
+                ).append(
+                    $(`<a href="#">[Delete]</a>`).on('click', function () {
+                        deleteAd(ads[i])
+                    })
+                )
+            )
+        }
+    }
+
+}
+
+function loadAdForEdit(ad) {
+    showView('viewEditAd');
+    $('#formEditAd input[name=id]').val(ad._id);
+    $('#formEditAd input[name=publisher]').val(ad.publisher);
+    $('#formEditAd input[name=title]').val(ad.title);
+    $('#formEditAd textarea[name=description]').val(ad.description);
+    $('#formEditAd input[name=datePublished]').val(ad.date);
+    $('#formEditAd input[name=price]').val(ad.price);
+}
+
+function showInfo(message) {
+    let infoBox = $('#infoBox');
+    infoBox.text(message);
+    infoBox.show();
+    setTimeout(function() {
+        $('#infoBox').fadeOut();
+    }, 3000);
+
+}
+function showError(errorMsg) {
+    let errorBox = $('#errorBox');
+    errorBox.text("Error: " + errorMsg);
+    errorBox.show();
+}
+function showRegisterView()
+{
+    //Register user
+   let regUserForm =  $('#formRegister');
+    regUserForm.trigger('reset');
+    showView('viewRegister');
+
+}
+
+function showLoginView() {
+    showView('viewLogin');
+    $('#formLogin').trigger('reset')
+}
+
+
+function showCreateAdView() {
+    $('#formCreateAd').trigger('reset');
+    showView('viewCreateAd');
+}
+
+
+function showHideMenuLinks() {
+    $("#linkHome").show();
+    if (sessionStorage.getItem('authToken') === null) { // No logged in user
+        $("#linkLogin").show();
+        $("#linkRegister").show();
+        $("#linkListAds").hide();
+        $("#linkCreateAd").hide();
+        $("#linkLogout").hide();
+        $('#loggedInUser').text('');
+    } else {
+        // We have logged in user
+        $("#linkLogin").hide();
+        $("#linkRegister").hide();
+        $("#linkListAds").show();
+        $("#linkCreateAd").show();
+        $("#linkLogout").show();
+
+        $('#loggedInUser').text("Welcome, " + sessionStorage.getItem('username') + "!");
+        $('#loggedInUser').show();
+    }
+}
