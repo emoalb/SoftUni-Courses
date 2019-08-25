@@ -2,7 +2,7 @@
 
 ### March 2018
 
-### Some projects are in separate repository
+### Some projects are in separate repositories
 
  link to exam: https://github.com/emoalb/spotify
  
