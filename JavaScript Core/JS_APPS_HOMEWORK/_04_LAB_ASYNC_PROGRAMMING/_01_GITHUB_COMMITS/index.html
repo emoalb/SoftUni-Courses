@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Github Commits</title>
+    <script src="../../node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+GitHub username:
+<input type="text" id="username" value="emoalb" /> <br>
+Repo: <input type="text" id="repo" value="SoftUni-Courses" />
+<button onclick="loadCommits()">Load Commits</button>
+<ul id="commits"></ul>
+<script>
+    function loadCommits() {
+        $('#commits').empty();
+        let url = "https://api.github.com/repos/" + $('#username').val() + "/" + $('#repo').val() + "/commits";
+
+        $.get(url)
+            .then(displayCommits)
+            .catch(displayError);
+
+        function displayCommits(commits) {
+            for(let commit of commits){
+                $('#commits').append($('<li>').text(commit.commit.author.name + ": " + commit.commit.message));
+            }
+        }
+
+        function displayError(err) {
+            $('#commits').append($('<li>').text("Error: " + err.status + ' (' + err.statusText + ')'));
+        }
+    }
+</script>
+</body>
+</html>
